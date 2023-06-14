@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.yedam.Dao;
+import com.yedam.user.UserDao;
 
 public class BoardDao {
 	Connection conn;
@@ -15,7 +16,46 @@ public class BoardDao {
 	PreparedStatement psmt2;
 	ResultSet rs;
 	String sql;
-
+	UserDao dao1 = new UserDao();
+	
+	
+	//login check. id와 pw를 넣어서 정상처리 -> 로그인 
+	//- 로그인하고나면 그 사용자로 등록하면 writer란에 로그인한 사용자가 떠야함
+	//실패하면 계속로그인창
+//로그인메소드1
+//		public void loginCheck() {
+//			while(true) {
+//				String id = promptString("아이디를 입력하세요");
+//				String pw = promptString("비밀번호를 입력하세요");
+//				
+//				if(uDao.login(id,pwd)) {
+//					return;
+//				}
+//				System.out.println("입력정보를 확인하세요");
+//			}
+//			
+//		}
+	
+//로그인메소드2
+	public boolean login(String id , String pw) {
+		sql = "select * from tbl_users where user_id = ? and user_pw = ?";
+		conn = Dao.getConnect();
+		try {
+			psmt = conn.prepareStatement(sql);
+			psmt.setString(1, id);
+			psmt.setString(2, pw);
+			
+			rs = psmt.executeQuery();
+			if(rs.next()){
+				return true;
+			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}finally {
+			close();
+		}
+		return false;
+	}
 	// 클로즈 메소드
 	public void close() {
 		try {

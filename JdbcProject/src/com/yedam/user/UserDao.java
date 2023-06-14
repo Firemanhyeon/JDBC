@@ -15,6 +15,26 @@ public class UserDao {
 	PreparedStatement psmt;
 	ResultSet rs;
 	String sql;
+	//로그인메소드
+	public boolean login(String id , String pw) {
+		sql = "select * from tbl_users where user_id = ? and user_pw = ?";
+		conn = Dao.getConnect();
+		try {
+			psmt = conn.prepareStatement(sql);
+			psmt.setString(1, id);
+			psmt.setString(2, pw);
+			
+			rs = psmt.executeQuery();
+			if(rs.next()){
+				return true;
+			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}finally {
+			close();
+		}
+		return false;
+	}
 
 	public void close() {// 객체들의 정보를 끊어주는 메소드
 		try {
@@ -32,6 +52,7 @@ public class UserDao {
 			e.printStackTrace();
 		}
 	}
+
 
 	// 입력메소드
 	public boolean add(UserVo user) {
